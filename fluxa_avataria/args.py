@@ -1,5 +1,6 @@
 
 import argparse
+from fluxa_avataria.enums import FluxaThings, SupportedSoftware
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument(
@@ -7,12 +8,14 @@ arg_parser.add_argument(
     action="store",
     type=str,
     help="The type of software you're using",
+    choices=[ss.value for ss in SupportedSoftware],
 )
 arg_parser.add_argument(
     "thing",
     action="store",
     type=str,
-    help="What kind of thing do you want to change (avatar, banner, icon)",
+    help="What kind of thing do you want to change",
+    choices=[ft.value for ft in FluxaThings],
 )
 arg_parser.add_argument(
     "-c",

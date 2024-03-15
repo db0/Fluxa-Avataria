@@ -11,7 +11,7 @@ def generate_image(
         api_key="0000000000",
         prompt="A Cosmic Test GenAI Showcase Avatar", 
         width=1024, 
-        height=1024, 
+        height=1024,
         steps=20, 
         models=["Stable Cascade 1.0"], 
         nsfw=False,

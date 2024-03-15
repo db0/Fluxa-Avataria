@@ -55,6 +55,10 @@ class FluxaLemmy():
                 self.lemmy.user.save_user_settings(avatar=pictrs_response[0]['image_url'])
             elif thing_type == 'user_banner':
                 self.lemmy.user.save_user_settings(banner=pictrs_response[0]['image_url'])
+            elif thing_type == 'site_avatar':
+                self.lemmy.site.edit(icon=pictrs_response[0]['image_url'])
+            elif thing_type == 'site_banner':
+                self.lemmy.site.edit(banner=pictrs_response[0]['image_url'])
             elif thing_type in ['community_icon', 'community_banner']:
                 community_id = self.lemmy.discover_community(thing)
                 if thing_type == 'community_banner':
@@ -98,4 +102,14 @@ class FluxaLemmy():
         print(f"Uploading new banner for {community}")
         DELETE_FILENAME = f"lemmy_community_{community}_icon_delete_url.txt"
         self.upload_user_thing(gen_image, DELETE_FILENAME, 'community_banner', community)
+
+    def upload_site_icon(self, gen_image):
+        print(f"Uploading new site icon for {self._lemmy_domain}")
+        DELETE_FILENAME = f"lemmy_site_{self._lemmy_domain}_icon_delete_url.txt"
+        self.upload_user_thing(gen_image, DELETE_FILENAME, 'site_icon')
+
+    def upload_site_banner(self, gen_image):
+        print(f"Uploading new site banner for {self._lemmy_domain}")
+        DELETE_FILENAME = f"lemmy_site_{self._lemmy_domain}_banner_delete_url.txt"
+        self.upload_user_thing(gen_image, DELETE_FILENAME, 'site_banner')
 
