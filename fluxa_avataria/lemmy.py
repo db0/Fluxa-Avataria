@@ -55,24 +55,47 @@ class FluxaLemmy():
                 self.lemmy.user.save_user_settings(avatar=pictrs_response[0]['image_url'])
             elif thing_type == 'user_banner':
                 self.lemmy.user.save_user_settings(banner=pictrs_response[0]['image_url'])
+            elif thing_type in ['community_icon', 'community_banner']:
+                community_id = self.lemmy.discover_community(thing)
+                if thing_type == 'community_banner':
+                    req = self.lemmy.community.edit(community_id, banner=pictrs_response[0]['image_url'])
+                else:
+                    self.lemmy.community.edit(community_id, icon=pictrs_response[0]['image_url'])
         except Exception as err:
             success = self.lemmy.image.delete(pictrs_response[0]['delete_url'])
             if success:
-                print(f"Failed to set {thing_type}. Deleted newly uploaded image.")
+                print(f"Failed to set {thing_type} ({err}). Deleted newly uploaded image.")
+                try:
+                    os.remove(delete_filename) 
+                except FileNotFoundError:
+                    pass
             else:
                 print(f"Failed to set {thing_type}. Failed to deleted newly uploaded image through url: {pictrs_response[0]['delete_url']}.")
-        print(pictrs_response[0]['delete_url'],  file=open(delete_filename, 'w'))
         if not previous_delete_url:
             return
+        print(pictrs_response[0]['delete_url'],  file=open(delete_filename, 'w'))
         req = self.lemmy.image.delete(previous_delete_url)
         if not req:
             print(f"Failed to delete old avatar through URL: {previous_delete_url}")
             
 
     def upload_user_avatar(self, gen_image):
+        print(f"Uploading new avatar for {self.lemmy.username}")
         DELETE_FILENAME = f"lemmy_user_{self.lemmy.username}_avatar_delete_url.txt"
         self.upload_user_thing(gen_image, DELETE_FILENAME, 'user_avatar')
 
     def upload_user_banner(self, gen_image):
+        print(f"Uploading new banner for {self.lemmy.username}")
         DELETE_FILENAME = f"lemmy_user_{self.lemmy.username}_banner_delete_url.txt"
         self.upload_user_thing(gen_image, DELETE_FILENAME, 'user_banner')
+
+    def upload_community_icon(self, gen_image, community):
+        print(f"Uploading new icon for {community}")
+        DELETE_FILENAME = f"lemmy_community_{community}_icon_delete_url.txt"
+        self.upload_user_thing(gen_image, DELETE_FILENAME, 'community_icon', community)
+
+    def upload_community_banner(self, gen_image, community):
+        print(f"Uploading new banner for {community}")
+        DELETE_FILENAME = f"lemmy_community_{community}_icon_delete_url.txt"
+        self.upload_user_thing(gen_image, DELETE_FILENAME, 'community_banner', community)
+

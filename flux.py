@@ -17,8 +17,8 @@ gen_image = generate_image(
     height = args.height if args.height else int(os.getenv(f'GEN_HEIGHT_{args.software.upper()}_{args.thing.upper()}', 1024)),
     steps = args.steps if args.steps else int(os.getenv(f'GEN_STEPS_{args.software.upper()}_{args.thing.upper()}', 20)),
     models = [args.model] if args.model else os.getenv(f'GEN_MODELS_{args.software.upper()}_{args.thing.upper()}',["Stable Cascade 1.0"]),
+    n = args.n if args.n else int(os.getenv(f'GEN_N_{args.software.upper()}_{args.thing.upper()}', 1)),
     )
-
 if not gen_image:
     print("Image generation failed. Aborting")
     exit(1)
@@ -26,7 +26,8 @@ if args.thing == 'avatar':
     fluxa_control.upload_user_avatar(gen_image)
 if args.thing == 'banner':
     if args.community is not None:
-        print("Not Supported currently")
-    fluxa_control.upload_user_banner(gen_image)
+        fluxa_control.upload_community_banner(gen_image, args.community)
+    else:
+        fluxa_control.upload_user_banner(gen_image)
 if args.thing == 'icon':
-    print("Not Supported currently")
+    fluxa_control.upload_community_icon(gen_image, args.community)

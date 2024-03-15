@@ -83,9 +83,16 @@ arg_parser.add_argument(
     help="The number steps to use for the image to generate",
 )
 arg_parser.add_argument(
-    "--model",
+    "-n",
     action="store",
     required=False,
     type=int,
+    help="The number of images in a batch to attempt to find an uncensored image",
+)
+arg_parser.add_argument(
+    "--model",
+    action="store",
+    required=False,
+    type=str,
     help="The model to use to generate",
 )

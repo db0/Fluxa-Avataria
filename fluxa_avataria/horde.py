@@ -48,6 +48,7 @@ def generate_image(
                     uncensored_generation = gen
                     break
             if uncensored_generation is None:
+                print(f"All requests in iteration {i+1} returned censored. May retry...")
                 continue
             return simple_client.download_image_from_generation(uncensored_generation)
         except Exception as e:
