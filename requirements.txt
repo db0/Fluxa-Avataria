@@ -1,0 +1,7 @@
+requests
+mastodon.py
+pythorhead>=0.23.0
+python-dotenv
+loguru
+Pillow
+horde-sdk
