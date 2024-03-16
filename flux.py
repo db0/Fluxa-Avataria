@@ -40,7 +40,7 @@ while True:
         fluxa_control.upload_site_banner(gen_image)
     if args.rotate is None:
         exit(0)
-    rotate_timer = args.rotate #* 60 * 60
+    rotate_timer = args.rotate * 60 * 60
     print(f"Sleeping {rotate_timer} hours before new rotation.")
     time.sleep(rotate_timer) # Debug. Hours == seconds
  
