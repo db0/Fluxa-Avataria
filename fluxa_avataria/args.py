@@ -2,6 +2,15 @@
 import argparse
 from fluxa_avataria.enums import FluxaThings, SupportedSoftware
 
+def check_positive(value: str):
+    try:
+        value = int(value)
+    except Exception as err:
+        raise argparse.ArgumentTypeError(f"'{value}' is not an integer")
+    if value <= 0:
+        raise argparse.ArgumentTypeError(f"'{value}' is an invalid positive int value")
+    return value
+
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument(
     "software",
@@ -98,4 +107,12 @@ arg_parser.add_argument(
     required=False,
     type=str,
     help="The model to use to generate",
+)
+arg_parser.add_argument(
+    "-r",
+    "--rotate",
+    action="store",
+    required=False,
+    type=check_positive,
+    help="The amount of hours after which to rotate the image. If not defined, or 0, the program will exit after changing it once",
 )

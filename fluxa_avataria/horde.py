@@ -33,7 +33,7 @@ def generate_image(
                         sampler_name="k_euler_a",
                         width=width,
                         height=height,
-                        post_processing=["CodeFormers"],
+                        # post_processing=["CodeFormers"],
                         steps=steps,
                         n=n,
                     ),
