@@ -21,6 +21,7 @@ gen_image = generate_image(
     n = args.n if args.n else int(os.getenv(f'GEN_N_{args.software.upper()}_{args.thing.upper()}', 1)),
     nsfw=True,
     )
+
 if not gen_image:
     print("Image generation failed. Aborting")
     exit(1)

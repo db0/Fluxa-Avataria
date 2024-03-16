@@ -55,7 +55,7 @@ class FluxaLemmy():
                 self.lemmy.user.save_user_settings(avatar=pictrs_response[0]['image_url'])
             elif thing_type == 'user_banner':
                 self.lemmy.user.save_user_settings(banner=pictrs_response[0]['image_url'])
-            elif thing_type == 'site_avatar':
+            elif thing_type == 'site_icon':
                 self.lemmy.site.edit(icon=pictrs_response[0]['image_url'])
             elif thing_type == 'site_banner':
                 self.lemmy.site.edit(banner=pictrs_response[0]['image_url'])
@@ -75,9 +75,9 @@ class FluxaLemmy():
                     pass
             else:
                 print(f"Failed to set {thing_type}. Failed to deleted newly uploaded image through url: {pictrs_response[0]['delete_url']}.")
+        print(pictrs_response[0]['delete_url'],  file=open(delete_filename, 'w'))
         if not previous_delete_url:
             return
-        print(pictrs_response[0]['delete_url'],  file=open(delete_filename, 'w'))
         req = self.lemmy.image.delete(previous_delete_url)
         if not req:
             print(f"Failed to delete old avatar through URL: {previous_delete_url}")
