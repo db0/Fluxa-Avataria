@@ -116,3 +116,16 @@ arg_parser.add_argument(
     type=check_positive,
     help="The amount of hours after which to rotate the image. If not defined, or 0, the program will exit after changing it once",
 )
+arg_parser.add_argument(
+    "--dry",
+    action="store_true",
+    required=False,
+    help="Perform a dry run. Generate and save to disk instead of uploading.",
+)
+arg_parser.add_argument(
+    "--overlay",
+    action="store",
+    required=False,
+    type=str,
+    help="Add an overlay to the image before uploading it. The must be sized to match the generated image and needs to have a transparent background.",
+)
