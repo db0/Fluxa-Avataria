@@ -23,7 +23,7 @@ while True:
         width = args.width if args.width else int(os.getenv(f'GEN_WIDTH_{custom_part}', 1024)),
         height = args.height if args.height else int(os.getenv(f'GEN_HEIGHT_{custom_part}', 1024)),
         steps = args.steps if args.steps else int(os.getenv(f'GEN_STEPS_{custom_part}', 20)),
-        models = [args.model] if args.model else json.loads(os.getenv(f'GEN_MODELS_{custom_part}',["Stable Cascade 1.0"])),
+        models = [args.model] if args.model else json.loads(os.getenv(f'GEN_MODELS_{custom_part}','["Stable Cascade 1.0"]')),
         n = args.n if args.n else int(os.getenv(f'GEN_N_{custom_part}', 1)),
         nsfw=True,
         )
