@@ -8,7 +8,7 @@ from fluxa_avataria.utils import overlay_image
 
 args = arg_parser.parse_args()
 if args.software == 'lemmy':
-    fluxa_control = FluxaLemmy()
+    fluxa_control = FluxaLemmy(args=args)
 else:
     print(f"{args.software} is not supported at this moment")
     exit(1)

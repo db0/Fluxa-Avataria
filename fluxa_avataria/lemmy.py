@@ -1,6 +1,6 @@
 import os
 import dotenv
-
+import json 
 dotenv.load_dotenv()
 
 from pythorhead import Lemmy
@@ -11,10 +11,11 @@ class FluxaLemmy():
     _lemmy_username = None
     _lemmy_password = None
 
-    def __init__(self, arg_parser = None):
+    def __init__(self, arg_parser = None, args=None):
         if arg_parser:
             self.parse_lemmy_args(arg_parser)
-
+        if args:
+            self.args = args
         if not self._lemmy_domain:
             self._lemmy_domain = os.getenv("LEMMY_DOMAIN", "lemmy.dbzer0.com")
         if not self._lemmy_domain:
@@ -45,11 +46,18 @@ class FluxaLemmy():
         if pictrs_response is None:
             print("Failed to upload image")
             return
-        try:
-            with open(delete_filename, 'r') as file:
-                previous_delete_url = file.read()
-        except FileNotFoundError:
-            previous_delete_url = None
+        previous_delete_urls = []
+        # Lemmy < 0.19.4 requires manual cleanup
+        if self.lemmy.instance_version.compare("0.19.4") < 0:
+            try:
+                with open(delete_filename, 'r') as file:
+                    file_contents = file.read()
+                    try:
+                        previous_delete_urls = json.loads(file_contents)
+                    except json.decoder.JSONDecodeError as err:
+                        previous_delete_urls = [file_contents]
+            except FileNotFoundError:
+                pass
         try:
             if thing_type == 'user_avatar':
                 self.lemmy.user.save_user_settings(avatar=pictrs_response[0]['image_url'])
@@ -66,25 +74,33 @@ class FluxaLemmy():
                 else:
                     self.lemmy.community.edit(community_id, icon=pictrs_response[0]['image_url'])
         except Exception as err:
-            success = self.lemmy.image.delete(pictrs_response[0]['delete_url'])
-            if success:
-                print(f"Failed to set {thing_type} ({err}). Deleted newly uploaded image.")
-                try:
-                    os.remove(delete_filename) 
-                except FileNotFoundError:
-                    pass
+            if self.lemmy.instance_version.compare("0.19.4") >= 0:
+                print(f"Failed to set {thing_type} ({err}).")
             else:
-                print(f"Failed to set {thing_type}. Failed to deleted newly uploaded image through url: {pictrs_response[0]['delete_url']}.")
-        print(pictrs_response[0]['delete_url'],  file=open(delete_filename, 'w'))
-        if not previous_delete_url:
-            return
-        try:
-            req = self.lemmy.image.delete(previous_delete_url)
-        except Exception as err:
-            print(f"Error while deleting image: {err}")
-            req = None
-        if not req:
-            print(f"Failed to delete old avatar through URL: {previous_delete_url}")
+                success = self.lemmy.image.delete(pictrs_response[0]['delete_url'])
+                if success:
+                    print(f"Failed to set {thing_type} ({err}). Deleted newly uploaded image.")
+                    try:
+                        os.remove(delete_filename) 
+                    except FileNotFoundError:
+                        pass
+                else:
+                    print(f"Failed to set {thing_type}. Failed to deleted newly uploaded image through url: {pictrs_response[0]['delete_url']}.")
+        if self.lemmy.instance_version.compare("0.19.4") < 0:
+            delete_url = None
+            if len(previous_delete_urls) >= self.args.history:
+                delete_url = previous_delete_urls.pop(0)
+            previous_delete_urls.append(pictrs_response[0]['delete_url'])
+            print(json.dumps(previous_delete_urls),  file=open(delete_filename, 'w'))
+            if not delete_url:
+                return
+            try:
+                req = self.lemmy.image.delete(delete_url)
+            except Exception as err:
+                print(f"Error while deleting image: {err}")
+                req = None
+            if not req:
+                print(f"Failed to delete old avatar through URL: {delete_url}")
             
 
     def upload_user_avatar(self, gen_image):

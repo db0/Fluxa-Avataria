@@ -135,3 +135,11 @@ arg_parser.add_argument(
     type=str,
     help="Add an overlay to the image before uploading it. The must be sized to match the generated image and needs to have a transparent background.",
 )
+arg_parser.add_argument(
+    "--history",
+    action="store",
+    required=False,
+    type=int,
+    default=2,
+    help="How many images to keep undeleted (this can help avoid banners and avatars missing in federated instance)",
+)
