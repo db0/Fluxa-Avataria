@@ -123,6 +123,12 @@ arg_parser.add_argument(
     help="Perform a dry run. Generate and save to disk instead of uploading.",
 )
 arg_parser.add_argument(
+    "--nogen",
+    action="store_true",
+    required=False,
+    help="Don't generate an image. Used for testing.",
+)
+arg_parser.add_argument(
     "--overlay",
     action="store",
     required=False,

@@ -17,16 +17,20 @@ while True:
     custom_part = f'{args.software.upper()}_{args.thing.upper()}'
     if args.community is not None:
         custom_part += f"_{args.community.replace('@','_').replace('.','_')}"
-    gen_image = generate_image(
-        api_key = os.getenv("GENERATION_HORDE_API", "0000000000"),
-        prompt = args.prompt if args.prompt else os.getenv(f'GEN_PROMPT_{custom_part}', f"A Fluxa Avataria Test GenAI Showcase {args.thing}"),
-        width = args.width if args.width else int(os.getenv(f'GEN_WIDTH_{custom_part}', 1024)),
-        height = args.height if args.height else int(os.getenv(f'GEN_HEIGHT_{custom_part}', 1024)),
-        steps = args.steps if args.steps else int(os.getenv(f'GEN_STEPS_{custom_part}', 20)),
-        models = [args.model] if args.model else json.loads(os.getenv(f'GEN_MODELS_{custom_part}','["Stable Cascade 1.0"]')),
-        n = args.n if args.n else int(os.getenv(f'GEN_N_{custom_part}', 1)),
-        nsfw=True,
-        )
+    if args.nogen:
+        from PIL import Image
+        gen_image = Image.open("haidra_logo.png")
+    else:
+        gen_image = generate_image(
+            api_key = os.getenv("GENERATION_HORDE_API", "0000000000"),
+            prompt = args.prompt if args.prompt else os.getenv(f'GEN_PROMPT_{custom_part}', f"A Fluxa Avataria Test GenAI Showcase {args.thing}"),
+            width = args.width if args.width else int(os.getenv(f'GEN_WIDTH_{custom_part}', 1024)),
+            height = args.height if args.height else int(os.getenv(f'GEN_HEIGHT_{custom_part}', 1024)),
+            steps = args.steps if args.steps else int(os.getenv(f'GEN_STEPS_{custom_part}', 20)),
+            models = [args.model] if args.model else json.loads(os.getenv(f'GEN_MODELS_{custom_part}','["Stable Cascade 1.0"]')),
+            n = args.n if args.n else int(os.getenv(f'GEN_N_{custom_part}', 1)),
+            nsfw=True,
+            )
     
     if not gen_image:
         print("Image generation failed. Aborting")

@@ -78,7 +78,11 @@ class FluxaLemmy():
         print(pictrs_response[0]['delete_url'],  file=open(delete_filename, 'w'))
         if not previous_delete_url:
             return
-        req = self.lemmy.image.delete(previous_delete_url)
+        try:
+            req = self.lemmy.image.delete(previous_delete_url)
+        except Exception as err:
+            print(f"Error while deleting image: {err}")
+            req = None
         if not req:
             print(f"Failed to delete old avatar through URL: {previous_delete_url}")
             
