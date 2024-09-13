@@ -13,14 +13,15 @@ def generate_image(
         width=1024, 
         height=1024,
         steps=20, 
+        cfg_scale=8, 
         models=["Stable Cascade 1.0"], 
+        hires_fix=True,
         nsfw=False,
         retries=2,
         # Increase the n (up to 20) to ensure your gen will not return censored.
         # The higher the n, the slower the request and the more kudos you spend.
         # You should only increase it if the request often comes back censored.
         n=1):
-    gen_image = None
     for i in range(retries):
         try:
             simple_client = AIHordeAPISimpleClient()
@@ -30,15 +31,19 @@ def generate_image(
                     prompt=prompt,
                     models=models,
                     params=ImageGenerationInputPayload(
-                        sampler_name="k_euler_a",
+                        sampler_name="k_euler",
                         width=width,
                         height=height,
                         # post_processing=["CodeFormers"],
                         steps=steps,
+                        karras=False,
+                        cfg_scale=cfg_scale,
                         n=n,
+                        hires_fix=hires_fix,
                     ),
                     nsfw=nsfw,
                     trusted_workers=True,
+                    extra_slow_workers=True,
                     censor_nsfw=not nsfw,
                 ),
             )
