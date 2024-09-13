@@ -95,6 +95,13 @@ arg_parser.add_argument(
     help="The number steps to use for the image to generate",
 )
 arg_parser.add_argument(
+    "--cfg",
+    action="store",
+    required=False,
+    type=float,
+    help="The cfg scale steps to use for the image to generate",
+)
+arg_parser.add_argument(
     "-n",
     action="store",
     required=False,
@@ -107,6 +114,12 @@ arg_parser.add_argument(
     required=False,
     type=str,
     help="The model to use to generate",
+)
+arg_parser.add_argument(
+    "--hires_fix",
+    action="store_true",
+    required=False,
+    help="Generate using hires_fix.",
 )
 arg_parser.add_argument(
     "-r",
